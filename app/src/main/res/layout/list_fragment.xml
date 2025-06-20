@@ -4,11 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Fragment1">
+    tools:context=".ListFragment">
 
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/tarifRw"
+        android:id="@+id/tarifRV"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginStart="1dp"
@@ -17,18 +17,18 @@
         android:layout_marginBottom="1dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floatingActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="32dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="15dp"
         android:clickable="true"
+        android:onClick="YeniEkle"
         android:src="@android:drawable/ic_input_add"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />

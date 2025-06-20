@@ -3,20 +3,28 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/fragment1">
+    app:startDestination="@id/listFragment">
+
 
     <fragment
-        android:id="@+id/fragment1"
-        android:name="com.ncorp.yemektarifleri.Fragment1"
-        android:label="fragment_1"
-        tools:layout="@layout/fragment_1" >
+        android:id="@+id/listFragment"
+        android:name="com.ncorp.yemektarifleri.ListFragment"
+        android:label="list_fragment"
+        tools:layout="@layout/list_fragment" >
         <action
-            android:id="@+id/action_fragment1_to_fragment2"
-            app:destination="@id/fragment2" />
+            android:id="@+id/action_listFragment_to_tarifFragment"
+            app:destination="@id/tarifFragment" />
     </fragment>
     <fragment
-        android:id="@+id/fragment2"
-        android:name="com.ncorp.yemektarifleri.Fragment2"
-        android:label="fragment_2"
-        tools:layout="@layout/fragment_2" />
+        android:id="@+id/tarifFragment"
+        android:name="com.ncorp.yemektarifleri.TarifFragment"
+        android:label="tarif_fragment"
+        tools:layout="@layout/tarif_fragment" >
+        <argument
+            android:name="bilgi"
+            app:argType="string" />
+        <argument
+            android:name="id"
+            app:argType="integer" />
+    </fragment>
 </navigation>

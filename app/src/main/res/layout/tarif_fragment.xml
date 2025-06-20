@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Fragment2">
+    tools:context=".TarifFragment">
 
 
     <ImageView
@@ -14,6 +14,7 @@
         android:layout_marginStart="5dp"
         android:layout_marginTop="40dp"
         android:layout_marginEnd="5dp"
+        android:onClick="image"
         android:src="@android:drawable/ic_menu_report_image"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -71,6 +72,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
+            android:onClick="save"
             android:text="Kaydet" />
 
         <Button
@@ -79,6 +81,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
 
+            android:onClick="delete"
             android:text="Sil" />
     </LinearLayout>
 
@@ -88,7 +91,8 @@
         android:layout_height="wrap_content"
         android:text="Görsel Seç"
         android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="368dp" />
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

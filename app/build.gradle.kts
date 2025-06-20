@@ -2,10 +2,15 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     id("com.google.devtools.ksp")
+    id("androidx.navigation.safeargs")
+
 
 }
 
 android {
+    buildFeatures {
+        viewBinding=true
+    }
     namespace = "com.ncorp.yemektarifleri"
     compileSdk = 35
 
@@ -28,6 +33,7 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
