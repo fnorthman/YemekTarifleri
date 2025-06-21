@@ -83,19 +83,24 @@ class TarifFragment : Fragment() {
 
     //////////////////////////////////////////////////////////////////////
     fun permissionController(view: View) {
+        // Eğer cihazın Android sürümü 13 (API 33) veya daha üzeriyse
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+
+            // Android 13 ve üstü için: READ_MEDIA_IMAGES izni verilmiş mi kontrol ediliyor
             if (ContextCompat.checkSelfPermission(
                     requireActivity(),
                     Manifest.permission.READ_MEDIA_IMAGES
                 ) != PackageManager.PERMISSION_GRANTED
             ) {
-                //İzin verilmemiş, izin istenecek
+                // İzin verilmemiş
+
+                // Kullanıcı daha önce reddettiyse, neden izin istendiğini açıklamak için gösterim yapılır mı?
                 if (ActivityCompat.shouldShowRequestPermissionRationale(
                         requireActivity(),
                         Manifest.permission.READ_MEDIA_IMAGES
                     )
                 ) {
-                    //snackbar gösterilecek
+                    // Kullanıcıya Snackbar ile açıklama gösteriliyor ve bir buton sunuluyor
                     Snackbar.make(
                         view,
                         "Galeriye gitmek için izin gerekli",
@@ -104,40 +109,42 @@ class TarifFragment : Fragment() {
                         .setAction(
                             "İzin Ver",
                             View.OnClickListener {
-                                //izin istenecek
+                                // Kullanıcı butona tıklarsa: izin isteme işlemi başlatılıyor
                                 permissionLauncher.launch(Manifest.permission.READ_MEDIA_IMAGES)
-
                             }
 
                         ).show()
 
                 } else {
-                    //İzin istenecek
+                    // Kullanıcı daha önce hiçbir tepki vermemişse, doğrudan izin istenir
                     permissionLauncher.launch(Manifest.permission.READ_MEDIA_IMAGES)
-
                 }
 
             } else {
-                //izin zaten verilmiş izin istemeden galeriye git
+                // İzin zaten verilmişse, doğrudan galeri açılır
                 val intentToGallery =
                     Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+
+                // Galeri başlatıcıya intent gönderilir
                 activityResultLauncher.launch(intentToGallery)
             }
 
-
         } else {
+            // Android 12 ve altı sürümler için: READ_EXTERNAL_STORAGE kullanılır
+
             if (ContextCompat.checkSelfPermission(
                     requireActivity(),
                     Manifest.permission.READ_EXTERNAL_STORAGE
                 ) != PackageManager.PERMISSION_GRANTED
             ) {
-                //İzin verilmemiş, izin istenecek
+                // İzin verilmemiş
+
                 if (ActivityCompat.shouldShowRequestPermissionRationale(
                         requireActivity(),
                         Manifest.permission.READ_EXTERNAL_STORAGE
                     )
                 ) {
-                    //snackbar gösterilecek
+                    // Kullanıcıya neden izin gerektiği anlatılıyor
                     Snackbar.make(
                         view,
                         "Galeriye gitmek için izin gerekli",
@@ -146,77 +153,84 @@ class TarifFragment : Fragment() {
                         .setAction(
                             "İzin Ver",
                             View.OnClickListener {
-                                //izin istenecek
+                                // Kullanıcı butona tıklarsa izin istenir
                                 permissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
-
                             }
 
                         ).show()
 
                 } else {
-                    //İzin istenecek
+                    // Kullanıcıdan direkt olarak izin isteniyor
                     permissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
-
                 }
 
             } else {
-                //izin zaten verilmiş izin istemeden galeriye git
+                // İzin zaten verilmiş, doğrudan galeriye git
                 val intentToGallery =
                     Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
                 activityResultLauncher.launch(intentToGallery)
             }
         }
-
-
     }
 
+
     fun registerLauncher() {
+        // Galeri açma işlemi için ActivityResultLauncher tanımlanıyor
         activityResultLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+
+                // Eğer kullanıcı başarılı şekilde bir şey seçtiyse (RESULT_OK)
                 if (result.resultCode == Activity.RESULT_OK) {
-                    val intentFromResult = result.data
+                    val intentFromResult = result.data // Galeriden dönen veri alınır
                     if (intentFromResult != null) {
-                        secilenGorsel = intentFromResult.data
+                        secilenGorsel = intentFromResult.data // Seçilen görselin URI'si alınır
+
                         try {
                             if (Build.VERSION.SDK_INT >= 28) {
+                                // Android 9 (API 28) ve sonrası için: ImageDecoder kullanılır
                                 val source = ImageDecoder.createSource(
                                     requireActivity().contentResolver,
                                     secilenGorsel!!
                                 )
+                                // URI'den bitmap'e çevirme işlemi
                                 secilenBitmap = ImageDecoder.decodeBitmap(source)
+                                // Görsel ImageView'a atanıyor
                                 binding.imageView.setImageBitmap(secilenBitmap)
 
                             } else {
+                                // Android 8 ve altı için: MediaStore yöntemiyle bitmap alınıyor
                                 secilenBitmap = MediaStore.Images.Media.getBitmap(
                                     requireActivity().contentResolver,
                                     secilenGorsel
                                 )
+                                // Görsel ImageView'da gösteriliyor
                                 binding.imageView.setImageBitmap(secilenBitmap)
-
                             }
+
                         } catch (e: Exception) {
+                            // Hata olursa konsola yazdırılıyor
                             println(e.localizedMessage)
                         }
-
-
                     }
-
                 }
             }
+
+        // İzin isteme işlemi için launcher tanımlanıyor
         permissionLauncher = registerForActivityResult(
-            ActivityResultContracts.RequestPermission(),
-            { result ->
-                if (result) {
-                    //izin verildi
-                    val intentToGallery =
-                        Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-                    activityResultLauncher.launch(intentToGallery)
-                } else {
-                    //izin verilmedi
-                    Toast.makeText(requireContext(), "İzin verilmedi", Toast.LENGTH_LONG).show()
-                }
+            ActivityResultContracts.RequestPermission()
+        ) { result ->
 
-            })
-
+            // Eğer kullanıcı izni VERDİYSE
+            if (result) {
+                // Galeriye gitmek için intent oluştur
+                val intentToGallery =
+                    Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                activityResultLauncher.launch(intentToGallery) // Galeriyi aç
+            } else {
+                // Kullanıcı izni REDDETTİYSE uyarı göster
+                Toast.makeText(requireContext(), "İzin verilmedi", Toast.LENGTH_LONG).show()
+            }
+        }
     }
+
 }
