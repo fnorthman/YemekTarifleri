@@ -1,4 +1,4 @@
-package com.ncorp.yemektarifleri
+package com.ncorp.yemektarifleri.managers
 
 import android.Manifest
 import android.app.Activity
@@ -29,7 +29,8 @@ object PermissionManager {
 	private lateinit var galleryLauncher: ActivityResultLauncher<Intent>
 
 	// Kullanıcının seçtiği görseli dışarı aktarmak için callback (geri çağırma fonksiyonu)
-	private var onImageSelected: ((Bitmap) -> Unit)? = null
+	public var onImageSelected: ((Bitmap) -> Unit)? = null
+	public var selectedImage: Bitmap? = null
 
 	// Bu object hangi fragment'te çalışıyorsa onu burada tutarız (gereken yerlerde erişmek için)
 	private var fragment: Fragment? = null
@@ -70,6 +71,7 @@ object PermissionManager {
 
 						// bitmap oluşturulabildiyse, geri çağırma fonksiyonunu çağır
 						bitmap?.let { bmp -> onImageSelected?.invoke(bmp) }
+						selectedImage = bitmap
 					}
 				}
 			}
@@ -145,4 +147,3 @@ object PermissionManager {
 		}
 	}
 }
-
